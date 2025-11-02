@@ -1,8 +1,6 @@
 // ============================================
-// FIXED: backend/server.js - Analytics IP Detection
+// FIXED: backend/server.js
 // ============================================
-// This is the CORRECTED version that shows LOCAL IPs instead of external relay IPs
-
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
@@ -17,10 +15,31 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// Define allowed origins based on environment (local IP or Nginx Proxy URL)
+const allowedOrigins = [
+  'http://192.168.5.2',  // Your local frontend IP
+  'http://localhost',    // For local development
+  'https://productionurl.example.in',  // Nginx URL (change this to your production URL)
+];
+
+// Configure CORS to allow specific origins
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests from allowed origins or if there's no origin (e.g., mobile apps)
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],  // You can customize this based on your app
+};
+
+// Apply CORS middleware with options
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// --- ENHANCED CONFIGURATION ---
+// --- CONFIGURATION ---
 const config = {
   server: {
     port: PORT,
