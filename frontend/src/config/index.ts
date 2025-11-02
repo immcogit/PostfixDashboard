@@ -18,7 +18,7 @@ const config = {
   },
   app: {
     name: import.meta.env.VITE_APP_NAME || 'Postfix Dashboard',
-    version: import.meta.env.VITE_APP_VERSION || '2.0.0',
+    version: import.meta.env.VITE_APP_VERSION || '2.2.0',
   },
   pagination: {
     defaultPageSize: 50,
@@ -27,4 +27,5 @@ const config = {
 } as const;
 
 export { config };
+
 export default config;
